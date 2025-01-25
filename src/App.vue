@@ -1,26 +1,77 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app">
+    <div class="container">
+      <div class="main-box">
+        <nav class="nav">
+          <a href="/">Home</a>
+          <a href="/products">Products</a>
+          <a href="/orders">Orders</a>
+        </nav>
+        <div class="content">
+          <router-view />
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+};
 </script>
 
 <style>
+
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* Wysokość pełnego okna przeglądarki */
+  background-color: orange; /* Tło strony */
+  margin: 0;
 }
+
+.main-box {
+  width: 75vw; /* 75% szerokości okna przeglądarki */
+  height: 75vh; /* 75% wysokości okna przeglądarki */
+  background-color: #ffffff; /* Tło prostokąta */
+  border-radius: 20px; /* Zaokrąglone rogi */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Cień dla elegancji */
+  padding: 20px; /* Odstęp wewnętrzny */
+  position: relative; /* Aby `sticky` działało w obrębie */
+}
+
+nav {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  position: sticky; /* Pasek nawigacyjny "przyklejony" */
+  top: 0; /* Umiejscowienie na górze kontenera */
+  background-color: #ffffff; /* Tło dla nawigacji */
+  z-index: 10; /* Ustawienie nad innymi elementami */
+  padding: 10px 0; /* Dodatkowy odstęp wewnętrzny */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Cień dla lepszej widoczności */
+  border-bottom: 1px solid #e0e0e0; /* Dolna linia dla separacji */
+  border-radius: 20px 20px 0 0; /* Zaokrąglenie górnych rogów */
+}
+
+nav a {
+  text-decoration: none;
+  color: #007bff;
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+nav a:hover {
+  text-decoration: underline;
+  color: #0056b3;
+}
+
+.content {
+  height: calc(100% - 60px); /* Ustaw wysokość, aby zajęła resztę przestrzeni */
+  overflow-y: auto; /* Pozwól na przewijanie w pionie */
+  padding: 10px; /* Dodaj odstęp od krawędzi */
+}
+
 </style>
