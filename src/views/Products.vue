@@ -1,27 +1,28 @@
 <template>
-  <nav class="nav">
-    <a href="/home">Home</a>
-    <a href="/products">Products</a>
-    <a href="/orders">Orders</a>
-  </nav>
-    <div class="filters mb-3">
-      <input 
-        type="text" 
-        v-model="filterText" 
-        placeholder="Search by name" 
-        class="form-control mb-2"
-      />
-      <select v-model="filterCategory" class="form-select">
-        <option value="">All Categories</option>
-        <option v-for="category in categories" :key="category" :value="category">
-          {{ category }}
-        </option>
-      </select>
-    </div>
-    <div class="container">
+    <nav class="nav">
+      <a href="/home">Home</a>
+      <a href="/products">Products</a>
+      <a href="/orders">Orders</a>
+      <a href="/orderreviews">ReviewOrders</a>
+    </nav>
+  <div class="filters mb-3">
+    <input 
+      type="text" 
+      v-model="filterText" 
+      placeholder="Search by name" 
+      class="form-control mb-2"
+    />
+    <select v-model="filterCategory" class="form-select">
+      <option value="">All Categories</option>
+      <option v-for="category in categories" :key="category" :value="category">
+        {{ category }}
+      </option>
+    </select>
+  </div>
+  <div class="container">
     <table class="table table-striped table-hover">
       <tbody>
-        <tr v-for="(product, index) in products" :key="product.id">
+        <tr v-for="(product, index) in filteredProducts" :key="product.id">
           <th scope="row">{{ index + 1 }}</th>
           <td>{{ product.name }}</td>
           <td>{{ product.description }}</td>
@@ -36,20 +37,19 @@
       </tbody>
     </table>
   </div>
-    <div class="shopping-cart" @click="toggleCart">
-      🛒
-    </div>
-    <div v-if="cartVisible" class="cart-details">
-      <ul>
-        <li v-for="(item, index) in cart" :key="index">
-  {{ item.name }} - ${{ item.unit_price ? item.unit_price.toFixed(2) : '0.00' }}
-</li>
-
-        <li v-if="cart.length === 0" class="empty">Your cart is empty</li>
-      </ul>
-      <button class="btn btn-success mt-2" @click="placeOrder()">Order</button>
-    </div>
-</template> 
+  <div class="shopping-cart" @click="toggleCart">
+    🛒
+  </div>
+  <div v-if="cartVisible" class="cart-details">
+    <ul>
+      <li v-for="(item, index) in cart" :key="index">
+        {{ item.name }} - ${{ item.unit_price ? item.unit_price.toFixed(2) : '0.00' }}
+      </li>
+      <li v-if="cart.length === 0" class="empty">Your cart is empty</li>
+    </ul>
+    <button class="btn btn-success mt-2" @click="placeOrder()">Order</button>
+  </div>
+</template>
 
 <script>
 import { productService } from '../store/api';
@@ -59,7 +59,7 @@ export default {
   data() {
     return {
       products: [], // Lista produktów
-      categories: ['Fruits', 'Dairy', 'Grains', 'Snacks', 'Beverages'], // Kategorie produktów
+      categories: [], // Kategorie produktów z backendu
       cart: [], // Produkty w koszyku
       cartVisible: false, // Widoczność koszyka
       filterText: '', // Filtr tekstowy
@@ -81,38 +81,48 @@ export default {
   },
   methods: {
     addToCart(product) {
-  const existingProduct = this.cart.find(item => item.name === product.name);
-  if (existingProduct) {
-    existingProduct.quantity += 1;
-  } else {
-    this.cart.push({
-      ...product,
-      quantity: 1,
-      unit_price: parseFloat(product.unit_price) || 0, // Konwersja na liczbę
-    });
-    }
+      const existingProduct = this.cart.find(item => item.name === product.name);
+      if (existingProduct) {
+        existingProduct.quantity += 1;
+      } else {
+        this.cart.push({
+          ...product,
+          quantity: 1,
+          unit_price: parseFloat(product.unit_price) || 0,
+        });
+      }
     },
-
     toggleCart() {
       this.cartVisible = !this.cartVisible;
     },
     placeOrder() {
-    console.log('placeOrderFun'); // Debugging
-  localStorage.setItem('cart', JSON.stringify(this.cart)); // Zapis koszyka do localStorage
-  this.$router.push('/cart');
-},
+      console.log('placeOrderFun');
+      localStorage.setItem('cart', JSON.stringify(this.cart));
+      this.$router.push('/cart');
+    },
   },
   async created() {
     try {
-      // Pobranie danych produktów z backendu
-      this.products = await productService.getAllProducts();
-      console.log('Products loaded:', this.products); // Debugowanie
+      const products = await productService.getAllProducts();
+    const categories = await productService.getAllCategories();
+
+    // Mapowanie kategorii na podstawie category_id
+    this.categories = categories.map(category => category.name);
+    this.products = products.map(product => {
+      const category = categories.find(cat => cat.id === product.category_id);
+      return {
+        ...product,
+        category: category ? category.name : 'Unknown', // Dodaj nazwę kategorii do produktu
+      };
+    });
+
+    console.log('Products with categories mapped:', this.products);
+    console.log('Categories loaded:', this.categories);
     } catch (error) {
-      console.error('Failed to load products:', error.message);
-      alert('Unable to load products. Please try again later.');
+      console.error('Failed to load products or categories:', error.message);
+      alert('Unable to load data. Please try again later.');
     }
   },
-
 };
 </script>
 
@@ -120,7 +130,7 @@ export default {
 
 .container {
   height: 100%; /* Pełna wysokość kontenera */
-  max-height: 470px; /* Ograniczenie maksymalnej wysokości */
+  max-height: 380px; /* Ograniczenie maksymalnej wysokości */
   overflow-y: auto; /* Dodanie przewijania */
   padding: 10px;
   background: #fff;
