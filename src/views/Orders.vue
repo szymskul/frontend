@@ -1,5 +1,10 @@
 <template>
     <div>
+      <nav class="nav">
+      <a href="/home">Home</a>
+      <a href="/products">Products</a>
+      <a href="/orders">Orders</a>
+    </nav>
       <table class="orders-table">
         <thead>
           <tr>

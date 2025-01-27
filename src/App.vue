@@ -1,16 +1,7 @@
 <template>
   <div id="app">
-    <div class="container">
-      <div class="main-box">
-        <nav class="nav">
-          <a href="/">Home</a>
-          <a href="/products">Products</a>
-          <a href="/orders">Orders</a>
-        </nav>
-        <div class="content">
-          <router-view />
-        </div>
-      </div>
+    <div class="main-box">
+        <router-view/>
     </div>
   </div>
 </template>

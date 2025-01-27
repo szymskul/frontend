@@ -1,26 +1,25 @@
 <template>
-    <div>
-      <h1>Witamy w aplikacji</h1>
-      <p>Jest to strona główna.</p>
-      <ButtonNew label="Kliknij mnie" />
+  <div>
+    <nav class="nav">
+      <a href="/home">Home</a>
+      <a href="/products">Products</a>
+      <a href="/orders">Orders</a>
+    </nav>
+    <div class="content">
+      <h1>Welcome to the Home Page!</h1>
     </div>
-  </template>
-  
-  <script>
-  import ButtonNew from '../components/ButtonNew.vue'; // Importujemy komponent Button
-  
-  export default {
-    name: 'HomeView',
-    components: {
-      ButtonNew, // Rejestrujemy komponent Button
-    },
-  };
-  </script>
-  
-  <style scoped>
-  /* Stylowanie widoku */
-  h1 {
-    color: blue;
-  }
-  </style>
-  
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'HomeView',
+};
+</script>
+
+<style scoped>
+
+.content {
+  margin-top: 20px;
+}
+</style>

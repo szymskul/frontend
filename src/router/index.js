@@ -6,11 +6,11 @@ import CartView from '../views/Cart.vue';
 import SignUp from '../views/SignUp.vue';
 
 const routes = [
-  { path: '/', name: 'home', component: HomeView },
+  { path: '/', name: 'signup', component: SignUp },
   { path: '/products', name: 'products', component: ProductsView},
   { path: '/orders', name: 'orders', component: OrdersView},
   { path: '/cart', name: 'cart', component: CartView},
-  { path: '/signup', name: 'signup', component: SignUp},
+  { path: '/home', name: 'homeview', component: HomeView},
 ];
 
 const router = createRouter({
